@@ -1,0 +1,60 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://fonts/Space_Mono/SpaceMono-Regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://scenes/MainMenu/QuitBtn.gd" type="Script" id=3]
+[ext_resource path="res://scenes/Lobby/PlayerLabel2.gd" type="Script" id=4]
+[ext_resource path="res://scenes/Lobby/PlayerLabel.tscn" type="PackedScene" id=5]
+
+[sub_resource type="DynamicFont" id=1]
+size = 42
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 42
+font_data = ExtResource( 2 )
+
+[node name="MainMenu" type="MarginContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 100.0
+margin_top = 100.0
+margin_right = -100.0
+margin_bottom = -100.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 824.0
+margin_bottom = 400.0
+
+[node name="MainMenuLabel" type="Label" parent="VBoxContainer"]
+margin_right = 234.0
+margin_bottom = 64.0
+size_flags_horizontal = 0
+custom_fonts/font = SubResource( 1 )
+text = "Main Menu"
+
+[node name="PlayBtn" parent="VBoxContainer" instance=ExtResource( 5 )]
+margin_top = 68.0
+margin_right = 824.0
+margin_bottom = 132.0
+text = "Play"
+script = ExtResource( 4 )
+
+[node name="QuitBtn" type="Label" parent="VBoxContainer"]
+margin_top = 136.0
+margin_right = 104.0
+margin_bottom = 200.0
+mouse_filter = 1
+size_flags_horizontal = 0
+custom_fonts/font = SubResource( 2 )
+text = "Quit"
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="gui_input" from="VBoxContainer/PlayBtn" to="VBoxContainer/PlayBtn" method="_on_PlayerLabel_gui_input"]
+[connection signal="gui_input" from="VBoxContainer/QuitBtn" to="VBoxContainer/QuitBtn" method="_on_QuitBtn_gui_input"]
+[connection signal="mouse_entered" from="VBoxContainer/QuitBtn" to="VBoxContainer/QuitBtn" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="VBoxContainer/QuitBtn" to="VBoxContainer/QuitBtn" method="_on_mouse_exited"]
