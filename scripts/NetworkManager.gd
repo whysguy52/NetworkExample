@@ -66,7 +66,7 @@ func _on_network_peer_disconnected(id):
 	
 
 remotesync func _load_game():
-	var nextScene = preload("res://scenes/Levels/Map1Scene.tscn").instance()
+	var nextScene = preload("res://scenes/Levels/TestLevel.tscn").instance()
 	Global.go_to_scene(nextScene)
 
 func load_game():
