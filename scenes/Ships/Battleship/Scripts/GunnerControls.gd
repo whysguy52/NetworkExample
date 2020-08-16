@@ -49,22 +49,34 @@ func process_input(delta):
 		for turret in turrets:
 			turret.fire()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
 func _input(event):
 	if role != "gunner":
 		return
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		cameraOrbit.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
-		cameraNod.rotate_z(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
-		
-		gun1Orbit.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
-		gun1Nod.rotate_z(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
-		
-		gun2Orbit.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
-		gun2Nod.rotate_z(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
+		rotate_all(event)
 
-#		var camera_rot = cameraNod.rotation_degrees
-#		camera_rot.x = clamp(camera_rot.x, -70, 70)
-#		cameraNod.rotation_degrees = camera_rot
+remote func _turret_rotation(gun1Orbit, gun1Nod, gun2Orbit, gun2Nod):
+	$Gun1/Base.rotation_degrees = gun1Orbit
+	$Gun1/Base/PivotPoint.rotation_degrees = gun1Nod
+	
+	$Gun2/Base.rotation_degrees = gun2Orbit
+	$Gun2/Base/PivotPoint.rotation_degrees = gun2Nod
+	
+
+func rotate_all(event):
+	cameraOrbit.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
+	cameraNod.rotate_z(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
+	
+	gun1Orbit.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
+	gun1Nod.rotate_z(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
+	
+	gun2Orbit.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
+	gun2Nod.rotate_z(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
+	
+	rpc(
+		"_turret_rotation",
+		gun1Orbit.rotation_degrees,
+		gun1Nod.rotation_degrees, 
+		gun2Orbit.rotation_degrees, 
+		gun2Nod.rotation_degrees
+	)

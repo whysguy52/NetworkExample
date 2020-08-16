@@ -13,6 +13,9 @@ func _ready():
 
 
 func fire():
+	rpc("fire_total")
+
+remotesync func fire_total():
 	var clone = laser.instance()
 	var scene_root = get_tree().root.get_children()[0]
 	scene_root.add_child(clone)
