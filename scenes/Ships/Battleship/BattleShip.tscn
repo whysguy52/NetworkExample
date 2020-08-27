@@ -107,6 +107,7 @@ surfaces/0 = {
 }
 
 [node name="BattleShip2" type="KinematicBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 script = ExtResource( 4 )
 
 [node name="CameraOrbit" type="Spatial" parent="."]
