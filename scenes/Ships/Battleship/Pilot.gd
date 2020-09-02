@@ -2,12 +2,19 @@ extends KinematicBody
 
 
 var role
+
 var cameraOrbit
 var cameraNod
-var MOUSE_SENSITIVITY = 0.05
-var isTurning = false
-var ShipRotation: Vector3
+var cameraTilt
 
+var MOUSE_SENSITIVITY = 0.05
+
+var ShipOrientation
+var CameraOrientation
+var pointBetween
+var isDoneRotating = true
+
+export var rotationRate = 1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -17,6 +24,7 @@ func _ready():
 	$CameraOrbit/CameraNod/PilotCam.make_current()
 	cameraOrbit = $CameraOrbit
 	cameraNod = $CameraOrbit/CameraNod
+	cameraTilt = $CameraOrbit/CameraNod/PilotCam
 	
 	#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
@@ -24,17 +32,19 @@ func _ready():
 func _physics_process(delta):
 	if role != "pilot":
 		return
-	process_input(delta)
+	process_input()
 
-func process_input(delta):
+func process_input():
 	if Input.is_action_pressed("LMB") or Input.is_action_pressed("RMB"):
 		if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		if Input.is_action_pressed("RMB"):
-			turnShip(delta, cameraOrbit, cameraNod)
+			turnShip(true)
+			isDoneRotating = false
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	
+		if !isDoneRotating:
+			turnShip(false)
 	
 
 func _input(event):
@@ -43,21 +53,26 @@ func _input(event):
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		cameraOrbit.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
 		cameraNod.rotate_z(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
-		
+	
 
-func turnShip(delta, cameraH, cameraV):
-	var t = 0
-	t = t + delta * 1
+func turnShip(isUpdating):
 	
-	ShipRotation.y = cameraH.rotation_degrees.y
-	ShipRotation.z = cameraV.rotation_degrees.z
+	#Use cameraNod instead of PilotCam because it's initial rotation is 0.
 	
-	#self.rotation_degrees = self.rotation_degrees.linear_interpolate(ShipRotation, t)
+	ShipOrientation = Quat(transform.basis)
+	if isUpdating:
+		CameraOrientation = Quat(cameraNod.global_transform.basis)
 	
-	self.rotation_degrees += ShipRotation
-	cameraOrbit.rotation_degrees.y = 0
-	cameraNod.rotation_degrees.z = 0
-#	print(delta)
+	pointBetween = ShipOrientation.slerp(CameraOrientation,0.01)
+	
+	transform.basis = Basis(pointBetween)
+	var quatDiff = CameraOrientation.dot(ShipOrientation)
+	if quatDiff > 0.9999:
+		isDoneRotating = true
+	
+	#print(ShipOrientation)
+	print(quatDiff)
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 	#pass
