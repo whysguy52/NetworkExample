@@ -11,7 +11,10 @@ var MOUSE_SENSITIVITY = 0.05
 
 var ShipOrientation
 var CameraOrientation
-var pointBetween
+var NodOrientation
+var stepTowardsCamera
+var stepTowardsShip
+
 var isDoneRotating = true
 
 export var rotationRate = 1
@@ -43,7 +46,7 @@ func process_input():
 			isDoneRotating = false
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		if !isDoneRotating:
+	if !isDoneRotating:
 			turnShip(false)
 	
 
@@ -60,12 +63,17 @@ func turnShip(isUpdating):
 	#Use cameraNod instead of PilotCam because it's initial rotation is 0.
 	
 	ShipOrientation = Quat(transform.basis)
+	
 	if isUpdating:
 		CameraOrientation = Quat(cameraNod.global_transform.basis)
+		NodOrientation = Quat(cameraNod.global_transform.basis)
 	
-	pointBetween = ShipOrientation.slerp(CameraOrientation,0.01)
+	stepTowardsCamera = ShipOrientation.slerp(CameraOrientation,0.01)
+	stepTowardsShip = NodOrientation.slerp(CameraOrientation,0.01)
 	
-	transform.basis = Basis(pointBetween)
+	transform.basis = Basis(stepTowardsCamera)
+	cameraNod.global_transform.basis = Basis(stepTowardsShip)
+	
 	var quatDiff = CameraOrientation.dot(ShipOrientation)
 	if quatDiff > 0.9999:
 		isDoneRotating = true
