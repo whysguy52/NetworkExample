@@ -1,36 +1,42 @@
 extends Spatial
 
+#Camera parts
 var cameraOrbit
 var cameraNod
 
+#Gun parts
 var gun1Orbit
 var gun2Orbit
 var gun1Nod
 var gun2Nod
-var role
-
+var laserSpawn1
+var laserSpawn2
 var turrets = []
 
-var MOUSE_SENSITIVITY = 0.05
+var role
 
+var MOUSE_SENSITIVITY = 0.05
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	role = NetworkManager.myPlayerData["role"]
+	
+	gun1Orbit = get_parent().get_node("ShipBody/GunController/Gun1/Base")
+	gun2Orbit = get_parent().get_node("ShipBody/GunController/Gun2/Base")
+	
+	gun1Nod = get_parent().get_node("ShipBody/GunController/Gun1/Base/PivotPoint")
+	gun2Nod = get_parent().get_node("ShipBody/GunController/Gun2/Base/PivotPoint")
+	
+	laserSpawn1 = get_parent().get_node("ShipBody/GunController/Gun1/Base/PivotPoint/LaserSpawn")
+	laserSpawn2 = get_parent().get_node("ShipBody/GunController/Gun2/Base/PivotPoint/LaserSpawn")
+	
+	turrets.append(laserSpawn1)
+	turrets.append(laserSpawn2)
 	if role != "gunner":
 		return
 	$CameraOrbit/CameraNod/Camera.make_current()
 	cameraOrbit = $CameraOrbit
 	cameraNod = $CameraOrbit/CameraNod
-	
-	gun1Orbit = $Gun1/Base
-	gun2Orbit = $Gun2/Base
-	
-	gun1Nod = $Gun1/Base/PivotPoint
-	gun2Nod = $Gun2/Base/PivotPoint
-	
-	turrets.append($Gun1/Base/PivotPoint/LaserSpawn)
-	turrets.append($Gun2/Base/PivotPoint/LaserSpawn)
 	
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
@@ -55,12 +61,13 @@ func _input(event):
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_all(event)
 
-remote func _turret_rotation(gun1Orbit, gun1Nod, gun2Orbit, gun2Nod):
-	$Gun1/Base.rotation_degrees = gun1Orbit
-	$Gun1/Base/PivotPoint.rotation_degrees = gun1Nod
+remote func _turret_rotation(gun1OrbitAngle, gun1NodAngle, gun2OrbitAngle, gun2NodAngle):
+	#THIS NEEDS TO BE REDONE!!! 
+	gun1Orbit.global_transform = gun1OrbitAngle
+	gun1Nod.global_transform = gun1NodAngle
 	
-	$Gun2/Base.rotation_degrees = gun2Orbit
-	$Gun2/Base/PivotPoint.rotation_degrees = gun2Nod
+	gun2Orbit.global_transform = gun2OrbitAngle
+	gun2Nod.global_transform = gun2NodAngle
 	
 
 func rotate_all(event):
@@ -75,8 +82,8 @@ func rotate_all(event):
 	
 	rpc(
 		"_turret_rotation",
-		gun1Orbit.rotation_degrees,
-		gun1Nod.rotation_degrees, 
-		gun2Orbit.rotation_degrees, 
-		gun2Nod.rotation_degrees
+		cameraOrbit.global_transform,
+		cameraNod.global_transform, 
+		gun2Orbit.global_transform, 
+		gun2Nod.global_transform
 	)
