@@ -13,7 +13,7 @@ func _ready():
 
 
 func _physics_process(delta):
-	var forward_dir = global_transform.basis.x.normalized() * -1
+	var forward_dir = global_transform.basis.x.normalized()
 	global_translate(forward_dir * BULLET_SPEED * delta)
 
 	timer += delta
@@ -25,6 +25,5 @@ func collided(body):
 	if hit_something == false:
 		if body.has_method("bullet_hit"):
 			body.bullet_hit(BULLET_DAMAGE, global_transform)
-
 	hit_something = true
 	queue_free()

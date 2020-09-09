@@ -4,15 +4,6 @@ extends Spatial
 var cameraOrbit
 var cameraNod
 
-#Gun parts
-var gun1Orbit
-var gun2Orbit
-var gun1Nod
-var gun2Nod
-var laserSpawn1
-var laserSpawn2
-var turrets = []
-
 var role
 
 var MOUSE_SENSITIVITY = 0.05
@@ -21,19 +12,9 @@ var MOUSE_SENSITIVITY = 0.05
 func _ready():
 	role = NetworkManager.myPlayerData["role"]
 	
-	gun1Orbit = get_parent().get_node("ShipBody/GunController/Gun1/Base")
-	gun2Orbit = get_parent().get_node("ShipBody/GunController/Gun2/Base")
-	
-	gun1Nod = get_parent().get_node("ShipBody/GunController/Gun1/Base/PivotPoint")
-	gun2Nod = get_parent().get_node("ShipBody/GunController/Gun2/Base/PivotPoint")
-	
-	laserSpawn1 = get_parent().get_node("ShipBody/GunController/Gun1/Base/PivotPoint/LaserSpawn")
-	laserSpawn2 = get_parent().get_node("ShipBody/GunController/Gun2/Base/PivotPoint/LaserSpawn")
-	
-	turrets.append(laserSpawn1)
-	turrets.append(laserSpawn2)
 	if role != "gunner":
 		return
+	
 	$CameraOrbit/CameraNod/Camera.make_current()
 	cameraOrbit = $CameraOrbit
 	cameraNod = $CameraOrbit/CameraNod
@@ -51,39 +32,19 @@ func process_input(delta):
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		else:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	if Input.is_action_just_pressed("LMB"):
-		for turret in turrets:
-			turret.fire()
+	
+	
 
+# Handles the "event" which is just the mouse motion
 func _input(event):
 	if role != "gunner":
 		return
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		rotate_all(event)
-
-remote func _turret_rotation(gun1OrbitAngle, gun1NodAngle, gun2OrbitAngle, gun2NodAngle):
-	#THIS NEEDS TO BE REDONE!!! 
-	gun1Orbit.global_transform = gun1OrbitAngle
-	gun1Nod.global_transform = gun1NodAngle
-	
-	gun2Orbit.global_transform = gun2OrbitAngle
-	gun2Nod.global_transform = gun2NodAngle
+		rotate_cam(event)
 	
 
-func rotate_all(event):
+#Need to figur out how to keep guns pointed at same thing camera is pointed at.
+func rotate_cam(event):
 	cameraOrbit.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
 	cameraNod.rotate_z(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
 	
-	gun1Orbit.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
-	gun1Nod.rotate_z(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
-	
-	gun2Orbit.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
-	gun2Nod.rotate_z(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
-	
-	rpc(
-		"_turret_rotation",
-		cameraOrbit.global_transform,
-		cameraNod.global_transform, 
-		gun2Orbit.global_transform, 
-		gun2Nod.global_transform
-	)

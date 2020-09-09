@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://scenes/Ships/Battleship/TurretParts/TurretBase.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/Ships/Battleship/TurretParts/TurretBarrel.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/Ships/Battleship/TurretParts/TurretPivotPoint.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/Ships/Battleship/Scripts/LaserSpawn.gd" type="Script" id=4]
+[ext_resource path="res://scenes/Ships/Battleship/TurretParts/Turret.gd" type="Script" id=5]
+
+[node name="Gun" type="Spatial"]
+script = ExtResource( 5 )
+
+[node name="Base" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+
+[node name="Cylinder" parent="Base" index="0"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 0.2, 0, 1, 0, -4.37114e-08, 0, 0, 0 )
+
+[node name="PivotPoint" parent="Base" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0 )
+
+[node name="TurretBarrel" parent="Base/PivotPoint" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0 )
+
+[node name="Barrel" parent="Base/PivotPoint/TurretBarrel" index="0"]
+transform = Transform( 1.4243e-15, -4.37114e-08, -0.2, -0.2, -1.62921e-07, 0, -3.25841e-08, 1, -8.74228e-09, 2, 0, -1 )
+
+[node name="LaserSpawn" type="Spatial" parent="Base/PivotPoint"]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.07284e-07, 0, -3 )
+script = ExtResource( 4 )
+
+[editable path="Base"]
+
+[editable path="Base/PivotPoint"]
+
+[editable path="Base/PivotPoint/TurretBarrel"]

@@ -48,8 +48,6 @@ func _input(event):
 		rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
 		cameraNod.rotate_z(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
 	
-
-
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):

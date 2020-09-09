@@ -10,8 +10,6 @@ var stepTowardsCamera
 
 var isDoneRotating = true
 
-
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	cameraNod = get_parent().get_node("PilotControls/CameraNod")
