@@ -13,9 +13,6 @@ var pivot
 func _ready():
 	role = NetworkManager.myPlayerData["role"]
 	
-	if role != "gunner":
-		return
-	
 	#Gun objects - ray cast (to match direction), base and pivot
 	gunCast = owner.get_node("GunnerControls/CameraOrbit/CameraNod/Camera/RayCast")
 	defaultTarget = owner.get_node("GunnerControls/CameraOrbit/CameraNod/Camera/TargetPoint")
@@ -28,7 +25,8 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	
+	if role != "gunner":
+		return
 	follow_camera()
 	
 	if Input.is_action_just_pressed("LMB"):
@@ -37,10 +35,15 @@ func _process(delta):
 func follow_camera():
 	
 	pivot.global_transform = pivot.global_transform.looking_at(defaultTarget.global_transform.origin,Vector3(0,1,0))
+	pivot.rotation_degrees.y = 0
 	pivot.global_transform = pivot.global_transform.orthonormalized()
 	
 	base.global_transform = base.global_transform.looking_at(defaultTarget.global_transform.origin,Vector3(0,1,0))
 	base.rotation_degrees.x = 0
 	base.global_transform = base.global_transform.orthonormalized()
 	
-	
+	rpc("remote_turret_turn",base.global_transform, pivot.global_transform)
+
+remote func remote_turret_turn(baseTransform, pivotTransform):
+	base.global_transform = baseTransform
+	pivot.global_transform = pivotTransform
