@@ -1,4 +1,4 @@
-extends KinematicBody
+extends Spatial
 
 var cameraNod
 var pilot
