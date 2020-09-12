@@ -32,11 +32,7 @@ func turnShip(isUpdating):
 
 remote func RemoteTurnShip(shipTransform):
 	transform = shipTransform
-	
-	#Use cameraNod instead of PilotCam because it's initial rotation is 0.
-	
-	
-		
+	#this is a comment
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
