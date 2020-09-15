@@ -14,7 +14,7 @@ func _ready():
 func _physics_process(delta):
 	if role != "pilot":
 		return
-	moveShipForward(delta)
+	move_ship_forward(delta)
 
-func moveShipForward(delta):
+func move_ship_forward(delta):
 	move_and_slide(shipPosition.transform.basis.x.normalized() * maxSpeed)

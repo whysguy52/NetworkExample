@@ -32,8 +32,6 @@ func process_input(delta):
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		else:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	
-	
 
 # Handles the "event" which is just the mouse motion
 func _input(event):
@@ -41,10 +39,9 @@ func _input(event):
 		return
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_cam(event)
-	
 
 #Need to figur out how to keep guns pointed at same thing camera is pointed at.
 func rotate_cam(event):
 	cameraOrbit.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
 	cameraNod.rotate_z(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
-	
+

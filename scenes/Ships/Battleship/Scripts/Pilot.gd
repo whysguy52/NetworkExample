@@ -3,8 +3,7 @@ extends Spatial
 
 var role
 
-var cameraOrbit
-var cameraNod
+var CameraNod
 var ShipBody
 var HUD
 var orientationLocked = false
@@ -20,7 +19,7 @@ func _ready():
 	if role != "pilot":
 		return
 	ShipBody = get_parent().get_node("ShipBody")
-	cameraNod = $CameraNod
+	CameraNod = $CameraNod
 	$CameraNod/PilotCam.make_current()
 	HUD = get_parent().get_node("PilotHud")
 	HUD.visible = true
@@ -34,20 +33,22 @@ func process_input():
 	
 	#Check if it's a mouse button
 	if Input.is_action_pressed("LMB") or Input.is_action_pressed("RMB"):
+		
 		#Lock the mouse
 		if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		#if it's RMB, tell ship to update cam direction
 		if Input.is_action_pressed("RMB"):
 			isUpdating = true
-			ShipBody.turnShip(isUpdating,orientationLocked)
+			ShipBody.turn_ship(isUpdating,orientationLocked)
 			isDoneRotating = false
+		
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	
 	if !isDoneRotating and !Input.is_action_pressed("RMB"):
 			isUpdating = false
-			ShipBody.turnShip(false,orientationLocked)
+			ShipBody.turn_ship(false,orientationLocked)
 	
 	if Input.is_action_pressed("ui_roll_left") or Input.is_action_pressed("ui_roll_right"):
 		ShipBody.roll_ship()
@@ -60,7 +61,7 @@ func _input(event):
 		return
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
-		cameraNod.rotate_z(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
+		CameraNod.rotate_z(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
 	
 
 func _on_CheckButton_toggled(button_pressed):

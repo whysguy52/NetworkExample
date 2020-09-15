@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://scenes/Ships/Battleship/Material.material" type="Material" id=1]
 [ext_resource path="res://scenes/Ships/Battleship/Scripts/GunnerControls.gd" type="Script" id=2]
@@ -7,7 +7,6 @@
 [ext_resource path="res://scenes/Ships/Battleship/Scripts/ShipBody.gd" type="Script" id=5]
 [ext_resource path="res://scenes/Ships/Battleship/hudArt/PilotHUD/CrossHair.png" type="Texture" id=6]
 [ext_resource path="res://scenes/Ships/Battleship/TurretParts/FullTurret.tscn" type="PackedScene" id=7]
-[ext_resource path="res://scenes/Ships/Battleship/Scripts/OrientationLockedBtn.gd" type="Script" id=8]
 
 [sub_resource type="BoxShape" id=1]
 extents = Vector3( 16, 3, 3 )
@@ -121,7 +120,9 @@ margin_left = 163.56
 margin_top = 64.8802
 margin_right = 239.56
 margin_bottom = 104.88
-script = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Label" type="Label" parent="PilotHud/Panel"]
 margin_left = 159.714
@@ -131,6 +132,9 @@ margin_bottom = 66.6642
 text = "Orientation
 Lock"
 align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="toggled" from="PilotHud/Panel/CheckButton" to="PilotControls" method="_on_CheckButton_toggled"]
 
 [editable path="ShipBody/GunController/Gun"]
