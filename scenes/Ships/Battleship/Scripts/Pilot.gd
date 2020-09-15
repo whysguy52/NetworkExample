@@ -6,10 +6,13 @@ var role
 var cameraOrbit
 var cameraNod
 var ShipBody
+var HUD
+var orientationLocked = false
 
 var MOUSE_SENSITIVITY = 0.05
 
 var isDoneRotating = true
+var isUpdating = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -19,9 +22,8 @@ func _ready():
 	ShipBody = get_parent().get_node("ShipBody")
 	cameraNod = $CameraNod
 	$CameraNod/PilotCam.make_current()
-	
-	#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	
+	HUD = get_parent().get_node("PilotHud")
+	HUD.visible = true
 
 func _physics_process(delta):
 	if role != "pilot":
@@ -29,17 +31,29 @@ func _physics_process(delta):
 	process_input()
 
 func process_input():
+	
+	#Check if it's a mouse button
 	if Input.is_action_pressed("LMB") or Input.is_action_pressed("RMB"):
+		#Lock the mouse
 		if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		#if it's RMB, tell ship to update cam direction
 		if Input.is_action_pressed("RMB"):
-			ShipBody.turnShip(true)
+			isUpdating = true
+			ShipBody.turnShip(isUpdating,orientationLocked)
 			isDoneRotating = false
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	if !isDoneRotating:
-			ShipBody.turnShip(false)
 	
+	if !isDoneRotating and !Input.is_action_pressed("RMB"):
+			isUpdating = false
+			ShipBody.turnShip(false,orientationLocked)
+	
+	if Input.is_action_pressed("ui_roll_left") or Input.is_action_pressed("ui_roll_right"):
+		ShipBody.roll_ship()
+	
+	#this may be overly redundant
+	ShipBody.transform.orthonormalized()
 
 func _input(event):
 	if role != "pilot":
@@ -48,7 +62,10 @@ func _input(event):
 		rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
 		cameraNod.rotate_z(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
 	
-	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-	#pass
+
+func _on_CheckButton_toggled(button_pressed):
+	if orientationLocked == false:
+		orientationLocked = true
+	else:
+		orientationLocked = false
+	isUpdating = true
