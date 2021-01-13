@@ -14,13 +14,18 @@ func _ready():
 #func _process(delta):
 #	pass
 
-
 func _on_gui_input(event):
 	if event.is_pressed():
 		NetworkManager.myPlayerData["role"] = "pilot"
 		NetworkManager.playerList[get_tree().get_network_unique_id()] = NetworkManager.myPlayerData
+		get_tree().get_root().get_node("LobbyMenu").render_player_list()
 		print(NetworkManager.playerList)
+		rpc("update_other_lists",NetworkManager.playerList)
 	
 
+remote func update_other_lists(updatedList):
+	NetworkManager.playerList = updatedList
+	get_tree().get_root().get_node("LobbyMenu").render_player_list()
+	print(NetworkManager.playerList)
 #remote func hide_label():
 #	visible = false
