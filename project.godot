@@ -21,8 +21,8 @@ config/icon="res://icon.png"
 
 [autoload]
 
-Global="*res://scripts/Global.gd"
 NetworkManager="*res://scripts/NetworkManager.gd"
+Global="*res://scripts/Global.gd"
 
 [input]
 
